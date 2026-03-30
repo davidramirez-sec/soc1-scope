@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SOC 1 Scope Tool — David Ramirez</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Epilogue:wght@300;400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:         #F5F2EC;
+  --bg2:        #EDE9E0;
+  --surface:    #FFFFFF;
+  --ink:        #1A1610;
+  --ink-mid:    #3D3628;
+  --ink-light:  #6B6050;
+  --rule:       #D4CCBC;
+  --gold:       #8B6914;
+  --gold-light: #C49A28;
+  --red:        #8B2020;
+  --green:      #1A5C30;
+  --blue:       #1A3A6B;
+  --orange:     #8B4010;
+  --font-head:  'Cormorant Garamond', Georgia, serif;
+  --font-body:  'Epilogue', sans-serif;
+  --font-mono:  'Fira Code', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--ink);
+  padding: 16px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  font-family: var(--font-head);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--bg);
+  letter-spacing: 0.5px;
+}
+.logo span { color: var(--gold-light); font-style: italic; }
+.header-right {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: #6B6050;
+  letter-spacing: 1.5px;
+}
+
+/* ── STAGE ── */
+.stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  width: 100%;
+  max-width: 620px;
+  padding: 52px;
+  position: relative;
+  box-shadow: 0 2px 40px rgba(26,22,16,.08);
+}
+
+/* Top rule */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--ink);
+}
+
+/* ── PROGRESS ── */
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 44px;
+}
+.progress-track {
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+  position: relative;
+}
+.progress-fill {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  background: var(--ink);
+  transition: width .4s ease;
+}
+.progress-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-light);
+  white-space: nowrap;
+  letter-spacing: 1px;
+}
+
+/* ── INTRO ── */
+.intro { animation: fadeUp .3s ease; }
+.intro-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+.intro-title {
+  font-family: var(--font-head);
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 20px;
+}
+.intro-title em { color: var(--gold); font-style: italic; }
+.intro-body {
+  font-size: 14px;
+  color: var(--ink-light);
+  line-height: 1.9;
+  margin-bottom: 32px;
+  border-left: 2px solid var(--rule);
+  padding-left: 16px;
+}
+.intro-meta {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 36px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--rule);
+}
+.meta-item { }
+.meta-val {
+  font-family: var(--font-head);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 3px;
+}
+.meta-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--ink-light);
+  letter-spacing: 1.5px;
+}
+
+/* ── QUESTION ── */
+.q-wrap { animation: fadeUp .25s ease; }
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.q-category {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.q-text {
+  font-family: var(--font-head);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.q-sub {
+  font-size: 13px;
+  color: var(--ink-light);
+  line-height: 1.7;
+  margin-bottom: 32px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; }
+.opt {
+  background: none;
+  border: 1px solid var(--rule);
+  padding: 14px 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  transition: all .15s;
+  text-align: left;
+  width: 100%;
+  font-family: var(--font-body);
+}
+.opt:hover { border-color: var(--ink); background: var(--bg); }
+.opt.selected { border-color: var(--ink); background: var(--ink); }
+.opt.selected .opt-letter { background: var(--bg); color: var(--ink); border-color: var(--bg); }
+.opt.selected .opt-text  { color: var(--bg); }
+.opt.selected .opt-sub   { color: #8B8070; }
+
+.opt-letter {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  width: 22px; height: 22px;
+  border: 1px solid var(--rule);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: var(--ink-light);
+  margin-top: 2px;
+  transition: all .15s;
+}
+.opt-body { flex: 1; }
+.opt-text { font-size: 13px; color: var(--ink); font-weight: 500; line-height: 1.5; }
+.opt-sub  { font-size: 11px; color: var(--ink-light); margin-top: 2px; line-height: 1.4; }
+
+.q-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+}
+
+/* ── BUTTONS ── */
+.btn {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 11px 28px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all .15s;
+  letter-spacing: .3px;
+}
+.btn-dark { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn-dark:hover { background: var(--ink-mid); }
+.btn-dark:disabled { opacity: .3; cursor: not-allowed; }
+.btn-outline { background: none; color: var(--ink-light); border-color: var(--rule); font-size: 12px; padding: 8px 18px; }
+.btn-outline:hover { color: var(--ink); border-color: var(--ink); }
+.btn-gold { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+.btn-gold:hover { background: var(--gold-light); }
+
+/* ── RESULT ── */
+.result { animation: fadeUp .3s ease; }
+
+.result-verdict {
+  padding: 28px;
+  margin-bottom: 24px;
+  position: relative;
+}
+.rv-yes     { background: #F0F7F2; border: 1px solid #A8D4B8; border-left: 4px solid var(--green); }
+.rv-no      { background: #F7F0F0; border: 1px solid #D4A8A8; border-left: 4px solid var(--red); }
+.rv-maybe   { background: #F7F4F0; border: 1px solid #D4C0A0; border-left: 4px solid var(--orange); }
+.rv-unclear { background: #F0F2F7; border: 1px solid #A8B8D4; border-left: 4px solid var(--blue); }
+
+.rv-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+.rv-yes     .rv-label { color: var(--green); }
+.rv-no      .rv-label { color: var(--red); }
+.rv-maybe   .rv-label { color: var(--orange); }
+.rv-unclear .rv-label { color: var(--blue); }
+
+.rv-title {
+  font-family: var(--font-head);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.rv-body { font-size: 13px; color: var(--ink-light); line-height: 1.8; }
+
+.result-section {
+  border: 1px solid var(--rule);
+  padding: 20px 22px;
+  margin-bottom: 10px;
+  background: var(--surface);
+}
+.rs-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+.rs-body { font-size: 13px; color: var(--ink-light); line-height: 1.8; }
+.rs-body strong { color: var(--ink); }
+
+.report-type-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.rt-card {
+  flex: 1;
+  border: 1px solid var(--rule);
+  padding: 14px 16px;
+  background: var(--bg);
+}
+.rt-rec {
+  border-color: var(--ink);
+  background: var(--surface);
+  position: relative;
+}
+.rt-rec::after {
+  content: 'RECOMMENDED';
+  position: absolute;
+  top: -1px; right: -1px;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 7px;
+  letter-spacing: 1px;
+  padding: 2px 6px;
+}
+.rt-name {
+  font-family: var(--font-head);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.rt-desc { font-size: 11px; color: var(--ink-light); line-height: 1.5; }
+
+.domains-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.domain-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border: 1px solid var(--rule);
+  color: var(--ink-light);
+  background: var(--bg);
+}
+.domain-tag.core { border-color: var(--ink); color: var(--ink); background: var(--surface); }
+
+.result-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+  flex-wrap: wrap;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--ink);
+  padding: 14px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.footer-l { font-family: var(--font-mono); font-size: 10px; color: #6B6050; }
+.footer-r { font-family: var(--font-mono); font-size: 10px; color: #6B6050; }
+.footer-r a { color: var(--gold-light); text-decoration: none; }
+
+@media (max-width: 640px) {
+  .card { padding: 32px 24px; }
+  .intro-title { font-size: 34px; }
+  .report-type-row { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">SOC1<span>Scope</span></div>
+  <div class="header-right">SCOPE DECISION TOOL · SOC 1 / SSAE 18 · BY DAVID RAMIREZ</div>
+</header>
+
+<div class="stage">
+  <div class="card" id="card"></div>
+</div>
+
+<footer>
+  <div class="footer-l">SOC1Scope v1.0 &nbsp;·&nbsp; 8 questions &nbsp;·&nbsp; SSAE 18</div>
+  <div class="footer-r">David Ramirez &nbsp;·&nbsp; SSCP · CCSP · CySA+ &nbsp;·&nbsp; <a href="mailto:davidramirez.tech@gmail.com">davidramirez.tech@gmail.com</a></div>
+</footer>
+
+<script>
+// ── QUESTIONS ──────────────────────────────────────────────────────────────
+const QUESTIONS = [
+  {
+    id: 'q1',
+    category: 'Service Type',
+    text: 'What does your company provide to its clients?',
+    sub: 'SOC 1 applies specifically to service organisations whose services affect their clients\' financial reporting. Not every company needs one.',
+    options: [
+      { text: 'We process financial transactions or data on behalf of clients', sub: 'Payroll, payments, claims processing, fund accounting', value: 'financial', weight: { soc1: 3 } },
+      { text: 'We host or manage systems that clients use for financial reporting', sub: 'Cloud infrastructure, managed IT, SaaS for finance teams', value: 'hosting', weight: { soc1: 2 } },
+      { text: 'We provide software or services that feed into client reporting but don\'t process transactions directly', sub: 'Data analytics, HR systems, ERP platforms', value: 'indirect', weight: { soc1: 1 } },
+      { text: 'We provide services unrelated to client financial processes', sub: 'Marketing, design, logistics, general consulting', value: 'unrelated', weight: { soc1: 0 } },
+    ]
+  },
+  {
+    id: 'q2',
+    category: 'Client Dependency',
+    text: 'Do your clients\' auditors ever ask about your controls?',
+    sub: 'This is one of the clearest signals that a SOC 1 is needed. User auditors test the controls at service organisations as part of their clients\' financial statement audits.',
+    options: [
+      { text: 'Yes — clients or their auditors have asked for evidence of our controls', sub: 'You\'ve received audit questionnaires or control requests', value: 'yes', weight: { soc1: 3 } },
+      { text: 'Not yet, but clients have mentioned it or we expect it soon', sub: 'Growing client base in regulated industries', value: 'soon', weight: { soc1: 2 } },
+      { text: 'No — our clients haven\'t raised this', sub: 'No audit-related requests received to date', value: 'no', weight: { soc1: 0 } },
+    ]
+  },
+  {
+    id: 'q3',
+    category: 'Client Profile',
+    text: 'Who are your primary clients?',
+    sub: 'The industries your clients operate in determines how likely they are to require a SOC 1 from their service providers.',
+    options: [
+      { text: 'Financial institutions, investment firms, or insurance companies', sub: 'Heavily regulated, almost always require SOC 1', value: 'financial', weight: { soc1: 3, type2: 2 } },
+      { text: 'Public companies or companies with external audits', sub: 'External auditors will look for SOC 1 reports', value: 'public', weight: { soc1: 2, type2: 1 } },
+      { text: 'Mid-market private companies', sub: 'Varies — some require it, many don\'t', value: 'midmarket', weight: { soc1: 1 } },
+      { text: 'Small businesses or startups', sub: 'Rarely require SOC 1 from vendors', value: 'small', weight: { soc1: 0 } },
+    ]
+  },
+  {
+    id: 'q4',
+    category: 'Financial Impact',
+    text: 'If your service had an outage or error, would it affect your clients\' financial statements?',
+    sub: 'This is the core test for SOC 1 applicability. The question is whether a failure in your controls could result in a misstatement in a client\'s financial reporting.',
+    options: [
+      { text: 'Yes — directly. Our errors would flow into client financial statements', sub: 'A payroll error, processing mistake, or data loss would be material', value: 'direct', weight: { soc1: 3, material: 2 } },
+      { text: 'Possibly — it depends on the system and the client', sub: 'Some clients would be impacted, others wouldn\'t', value: 'possible', weight: { soc1: 2, material: 1 } },
+      { text: 'Unlikely — our service supports operations but not financial reporting directly', sub: 'An outage would hurt productivity but not financial statements', value: 'unlikely', weight: { soc1: 1 } },
+      { text: 'No — we have no connection to client financial data', sub: 'Our service is entirely separate from financial reporting', value: 'no', weight: { soc1: 0 } },
+    ]
+  },
+  {
+    id: 'q5',
+    category: 'Report Type',
+    text: 'How established are your internal controls right now?',
+    sub: 'This affects whether a Type I or Type II report makes sense. Type I is a point-in-time assessment of control design. Type II tests whether controls operated effectively over a period — typically 6 to 12 months.',
+    options: [
+      { text: 'Well established — controls have been operating consistently for over a year', sub: 'Documented policies, consistent processes, audit trail exists', value: 'mature', weight: { type2: 3 } },
+      { text: 'Mostly in place — we\'ve been building controls over the past 6 to 12 months', sub: 'Good foundation but some gaps still being addressed', value: 'developing', weight: { type2: 1, type1: 2 } },
+      { text: 'Early stage — controls exist but are informal or inconsistently applied', sub: 'Processes vary by person or team, limited documentation', value: 'early', weight: { type1: 3 } },
+      { text: 'We\'re just starting — controls are not yet formally defined', sub: 'Pre-audit stage, controls being built from scratch', value: 'none', weight: { type1: 2, remediation: 2 } },
+    ]
+  },
+  {
+    id: 'q6',
+    category: 'Subservice Organisations',
+    text: 'Do you use third-party providers for any part of your service delivery?',
+    sub: 'If critical parts of your service are handled by subcontractors or cloud providers, this affects your SOC 1 scope. Your report will need to address how you manage and monitor those relationships.',
+    options: [
+      { text: 'Yes — we rely heavily on third parties for core service components', sub: 'Cloud hosting, data centres, or processing partners handle significant work', value: 'heavy', weight: { complexity: 2 } },
+      { text: 'Yes — some third parties are involved but we control the critical parts', sub: 'Third parties support us but we own the core processes', value: 'moderate', weight: { complexity: 1 } },
+      { text: 'Minimal — we handle almost everything in-house', sub: 'Standard SaaS tools only, no critical outsourcing', value: 'minimal', weight: { complexity: 0 } },
+    ]
+  },
+  {
+    id: 'q7',
+    category: 'Timeline',
+    text: 'Is there a deadline driving this — a client contract, procurement requirement, or audit date?',
+    sub: 'The answer affects which report type is realistic given your timeline.',
+    options: [
+      { text: 'Yes — we need a report within the next 3 months', sub: 'Urgent client or contract requirement', value: 'urgent', weight: { type1: 2 } },
+      { text: 'Yes — we have 3 to 9 months', sub: 'Planned engagement, moderate timeline', value: 'moderate', weight: { type1: 1, type2: 1 } },
+      { text: 'No hard deadline — we\'re planning ahead', sub: 'Strategic decision to get ahead of client requests', value: 'none', weight: { type2: 2 } },
+    ]
+  },
+  {
+    id: 'q8',
+    category: 'Scope Readiness',
+    text: 'Do you have documented policies and procedures for your key IT and operational controls?',
+    sub: 'Documentation is a baseline requirement. An auditor cannot test a control that has not been defined and documented.',
+    options: [
+      { text: 'Yes — fully documented, reviewed, and approved', sub: 'Policies exist for access control, change management, operations', value: 'full', weight: { readiness: 3 } },
+      { text: 'Partially — some areas are documented, others are not', sub: 'Gaps exist but the core is in place', value: 'partial', weight: { readiness: 2 } },
+      { text: 'Minimal documentation — most processes are informal', sub: 'Knowledge is in people\'s heads more than on paper', value: 'minimal', weight: { readiness: 1 } },
+      { text: 'Not yet — documentation is on the roadmap', sub: 'Pre-documentation stage', value: 'none', weight: { readiness: 0 } },
+    ]
+  },
+];
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+let current = -1;
+let answers = {};
+
+// ── SCORING ───────────────────────────────────────────────────────────────
+function score() {
+  let s = { soc1: 0, type1: 0, type2: 0, material: 0, complexity: 0, readiness: 0, remediation: 0 };
+  QUESTIONS.forEach(q => {
+    const ans = answers[q.id];
+    if (ans === undefined) return;
+    const w = q.options[ans].weight || {};
+    Object.keys(w).forEach(k => { s[k] = (s[k] || 0) + w[k]; });
+  });
+  return s;
+}
+
+function getVerdict(s) {
+  if (s.soc1 === 0) return {
+    type: 'no',
+    title: 'SOC 1 is likely not required',
+    body: 'Based on your answers, your services do not appear to directly affect your clients\' financial reporting processes. A SOC 1 report is designed specifically for service organisations whose controls are relevant to user entities\' financial statement audits. You may want to consider a SOC 2 instead if clients are asking about your security and data handling practices.',
+    reportType: null,
+    domains: [],
+    note: null,
+  };
+
+  if (s.soc1 >= 1 && s.soc1 <= 3 && s.readiness <= 1) return {
+    type: 'maybe',
+    title: 'SOC 1 may be relevant — but not yet',
+    body: 'Your services could fall within SOC 1 scope, but your current control environment suggests you are not ready for an engagement. Starting an audit before controls are documented and operating consistently typically results in significant exceptions or a qualified opinion. The priority right now is building and documenting your control environment before engaging an auditor.',
+    reportType: null,
+    domains: getCoreDomains(s),
+    note: 'Focus on documenting Logical Access, Change Management, and Computer Operations controls first.',
+  };
+
+  if (s.soc1 >= 6) return {
+    type: 'yes',
+    title: 'SOC 1 is strongly indicated',
+    body: 'Your services directly affect client financial reporting and you likely already face pressure from clients or their auditors. A SOC 1 report is the appropriate response. The question now is report type and scope — addressed below.',
+    reportType: getReportType(s),
+    domains: getCoreDomains(s),
+    note: s.complexity >= 2 ? 'Your use of third-party providers will need to be addressed in the report — either through carve-out or inclusive methodology.' : null,
+  };
+
+  return {
+    type: 'maybe',
+    title: 'SOC 1 is worth exploring',
+    body: 'Your services have some connection to client financial reporting but it is not as direct as a typical SOC 1 scenario. Whether you need a report depends on client expectations, contract requirements, and how your services are positioned. Worth a conversation with an auditor before committing to an engagement.',
+    reportType: s.soc1 >= 4 ? getReportType(s) : null,
+    domains: getCoreDomains(s),
+    note: null,
+  };
+}
+
+function getReportType(s) {
+  const t1Score = s.type1 + (s.readiness <= 1 ? 2 : 0);
+  const t2Score = s.type2 + (s.readiness >= 2 ? 2 : 0);
+  if (t1Score > t2Score) return 'type1';
+  if (t2Score > t1Score) return 'type2';
+  return 'either';
+}
+
+function getCoreDomains(s) {
+  const core = ['Logical Access', 'Change Management', 'Computer Operations'];
+  const extra = [];
+  if (s.material >= 2) extra.push('Data Integrity & Processing');
+  if (s.complexity >= 1) extra.push('Vendor & Subservice Management');
+  if (s.readiness >= 2) extra.push('Monitoring & Incident Response');
+  return { core, extra };
+}
+
+// ── RENDER ─────────────────────────────────────────────────────────────────
+function render() {
+  const card = document.getElementById('card');
+  if (current === -1)                  { renderIntro(card);    return; }
+  if (current >= QUESTIONS.length)     { renderResult(card);   return; }
+  renderQuestion(card);
+}
+
+function renderIntro(card) {
+  card.innerHTML = `
+    <div class="intro">
+      <div class="intro-eyebrow">SOC 1 / SSAE 18</div>
+      <div class="intro-title">Do you need a<br><em>SOC 1 report?</em></div>
+      <p class="intro-body">Most companies that get asked for a SOC 1 don't know what it actually requires or whether they genuinely need one. Eight questions. Straight answer.</p>
+      <div class="intro-meta">
+        <div class="meta-item">
+          <div class="meta-val">8</div>
+          <div class="meta-label">QUESTIONS</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-val">~3</div>
+          <div class="meta-label">MINUTES</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-val">SOC 1</div>
+          <div class="meta-label">SSAE 18</div>
+        </div>
+      </div>
+      <button class="btn btn-dark" onclick="start()" style="padding:14px 40px;font-size:14px">Start →</button>
+    </div>`;
+}
+
+function renderQuestion(card) {
+  const q = QUESTIONS[current];
+  const pct = Math.round((current / QUESTIONS.length) * 100);
+  const sel = answers[q.id];
+
+  card.innerHTML = `
+    <div class="q-wrap">
+      <div class="progress-row">
+        <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <div class="progress-label">${current + 1} / ${QUESTIONS.length}</div>
+      </div>
+
+      <div class="q-category">${q.category}</div>
+      <div class="q-text">${q.text}</div>
+      <div class="q-sub">${q.sub}</div>
+
+      <div class="options">
+        ${q.options.map((o, i) => `
+          <button class="opt ${sel === i ? 'selected' : ''}" onclick="pick(${i})">
+            <div class="opt-letter">${String.fromCharCode(65 + i)}</div>
+            <div class="opt-body">
+              <div class="opt-text">${o.text}</div>
+              <div class="opt-sub">${o.sub}</div>
+            </div>
+          </button>`).join('')}
+      </div>
+
+      <div class="q-nav">
+        <button class="btn btn-outline" onclick="back()" ${current === 0 ? 'style="visibility:hidden"' : ''}>← Back</button>
+        <button class="btn btn-dark" onclick="next()" ${sel === undefined ? 'disabled' : ''}>${current === QUESTIONS.length - 1 ? 'See Result →' : 'Next →'}</button>
+      </div>
+    </div>`;
+}
+
+function renderResult(card) {
+  const s = score();
+  const v = getVerdict(s);
+
+  const typeClass = { yes:'rv-yes', no:'rv-no', maybe:'rv-maybe', unclear:'rv-unclear' }[v.type];
+
+  let reportHTML = '';
+  if (v.reportType) {
+    const t1rec = v.reportType === 'type1' || v.reportType === 'either';
+    const t2rec = v.reportType === 'type2' || v.reportType === 'either';
+    reportHTML = `
+      <div class="result-section">
+        <div class="rs-label">REPORT TYPE</div>
+        <div class="report-type-row">
+          <div class="rt-card ${t1rec ? 'rt-rec' : ''}">
+            <div class="rt-name">Type I</div>
+            <div class="rt-desc">Point-in-time. Tests whether controls are suitably designed as of a specific date. Faster to obtain — typically 2 to 4 months. Good starting point if controls are newer or if there's a deadline.</div>
+          </div>
+          <div class="rt-card ${t2rec && !t1rec ? 'rt-rec' : ''}">
+            <div class="rt-name">Type II</div>
+            <div class="rt-desc">Period opinion. Tests whether controls operated effectively over 6 to 12 months. More valuable to clients and their auditors. Requires mature, consistently operating controls.</div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  let domainsHTML = '';
+  if (v.domains && (v.domains.core.length || (v.domains.extra && v.domains.extra.length))) {
+    domainsHTML = `
+      <div class="result-section">
+        <div class="rs-label">LIKELY IN-SCOPE DOMAINS</div>
+        <div class="rs-body" style="margin-bottom:12px">Core domains that appear in almost every SOC 1 engagement are marked. Additional domains depend on your specific service model.</div>
+        <div class="domains-list">
+          ${v.domains.core.map(d => `<span class="domain-tag core">${d}</span>`).join('')}
+          ${(v.domains.extra || []).map(d => `<span class="domain-tag">${d}</span>`).join('')}
+        </div>
+      </div>`;
+  }
+
+  let noteHTML = v.note ? `
+    <div class="result-section" style="border-left:3px solid var(--gold)">
+      <div class="rs-label">NOTE</div>
+      <div class="rs-body">${v.note}</div>
+    </div>` : '';
+
+  card.innerHTML = `
+    <div class="result">
+      <div class="progress-row">
+        <div class="progress-track"><div class="progress-fill" style="width:100%"></div></div>
+        <div class="progress-label">Complete</div>
+      </div>
+
+      <div class="result-verdict ${typeClass}">
+        <div class="rv-label">SCOPE ASSESSMENT</div>
+        <div class="rv-title">${v.title}</div>
+        <div class="rv-body">${v.body}</div>
+      </div>
+
+      ${reportHTML}
+      ${domainsHTML}
+      ${noteHTML}
+
+      <div class="result-section">
+        <div class="rs-label">WHAT THIS TOOL IS</div>
+        <div class="rs-body">This is a directional assessment based on general SOC 1 applicability criteria under SSAE 18. It is not a substitute for advice from a licensed CPA firm or service auditor. Every engagement is different and scope is ultimately determined in conversation with your auditor.</div>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn btn-dark" onclick="restart()">Start Over</button>
+        <button class="btn btn-outline" onclick="exportResult()">Export Summary</button>
+      </div>
+    </div>`;
+}
+
+// ── INTERACTIONS ───────────────────────────────────────────────────────────
+function start()   { current = 0; render(); }
+function back()    { if (current > 0) { current--; render(); } }
+function next()    { if (answers[QUESTIONS[current].id] !== undefined) { current++; render(); } }
+function pick(i)   { answers[QUESTIONS[current].id] = i; render(); }
+function restart() { current = -1; answers = {}; render(); }
+
+function exportResult() {
+  const s = score();
+  const v = getVerdict(s);
+  const lines = [
+    'SOC 1 Scope Assessment',
+    'SOC1Scope v1.0 — David Ramirez',
+    '---',
+    `Result: ${v.title}`,
+    '',
+    v.body,
+    '---',
+    'Answers:',
+    ...QUESTIONS.map((q, i) => {
+      const ans = answers[q.id];
+      return `  ${q.category}: ${ans !== undefined ? q.options[ans].text : 'Not answered'}`;
+    }),
+    '---',
+    'Disclaimer: Directional assessment only. Not a formal audit opinion or legal advice.',
+  ];
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'SOC1_Scope_Assessment.txt'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
